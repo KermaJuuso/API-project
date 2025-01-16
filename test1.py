@@ -1,8 +1,10 @@
 #First time testing out Riots API
 #Following guide by iTero Gaming on Youtube
+#This is just meant to be a testing file and for reference
 from dotenv import load_dotenv
 import os
 import requests
+import time
 
 load_dotenv()
 api_key = os.getenv("API_KEY")
@@ -79,14 +81,64 @@ def get_match_data(region, match_id):
         "?api_key=" +
         api_key
     )
-    resp = requests.get(api_url)
-    data = resp.json()
-    return data
+    while True:
+        resp = requests.get(api_url)
+
+        if resp.status_code == 429:
+            print("Too mane requests, 429")
+            time.sleep(10)
+            continue
+
+        data = resp.json()
+        return data
 
 # Lets say I want to know if I won the latest game I played
 region = "europe"
 
 #loop through last 20 games and print wins and losses
-for match in match_ids:
+"""for match in match_ids:
     data = get_match_data(region, match)
-    print(did_win(puuid, data))
+    print(did_win(puuid, data))"""
+
+
+#Part 5------------------------------------------------------------------------
+
+def get_matches(region, id, count, api_key):
+    api_url = (
+        "https://" +
+        region +
+        ".api.riotgames.com/lol/match/v5/matches/by-puuid/" +
+        id +
+        "/ids" +
+        "?type=ranked&" +
+        "start=0&" +
+        "count=" +
+        str(count) +
+        "&api_key=" +
+        api_key
+    )
+
+    resp = requests.get(api_url)
+    return resp.json()
+
+matches = get_matches(region, puuid, 100, api_key)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
