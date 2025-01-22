@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-from riot_api import get_puuid
+from riot_api import get_puuid, get_match_history
 
 app = Flask(__name__)
 
@@ -18,8 +18,15 @@ def profile():
 
     try:
         puuid = get_puuid(region, game_name, tag_line)
-        return render_template('profile.html', puuid=puuid, gameName=game_name,
-                               tagLine=tag_line)
+        matches = get_match_history(region, puuid)
+
+        return render_template(
+            'profile.html',
+            puuid=puuid,
+            gameName=game_name,
+            tagLine=tag_line,
+            matches=matches)
+
     except Exception as e:
         return render_template('error.html', message=str(e))
 
