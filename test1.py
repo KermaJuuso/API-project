@@ -11,7 +11,7 @@ api_key = os.getenv("API_KEY")
 puuid = os.getenv("MY_PUUID")
 
 #part 1------------------------------------------------------------------------
-"""
+
 api_url = "https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/"
 api_url = api_url + puuid + '?api_key=' + api_key
 
@@ -19,12 +19,13 @@ resp_player_info = requests.get(api_url)
 # Player info including different id's and other info
 player_info = resp_player_info.json()
 # Player level
-player_account_level = player_info['summonerLevel']
-"""
+print(player_info)
+
 
 
 #Part 2------------------------------------------------------------------------
 # Get past 20 played games by puuid
+"""
 url_matches = (f"https://europe.api.riotgames.com/lol/match/v5/matches/"
                f"by-puuid/{puuid}/ids?start=0&count=20")
 #Get the data
@@ -33,6 +34,8 @@ resp_matches = requests.get(api_matches)
 
 #Id's of last 20 games here
 match_ids = resp_matches.json()
+"""
+
 """
 # Get data from last game played
 game_api_url = (f"https://europe.api.riotgames.com/lol/match/v5/matches/"
@@ -97,7 +100,7 @@ region = "europe"
 
 #loop through last 20 games and print wins and losses
 """for match in match_ids:
-    data = get_match_data(region, match)
+    data = get_match_data(region, match) 
     print(did_win(puuid, data))"""
 
 
@@ -121,7 +124,7 @@ def get_matches(region, id, count, api_key):
     resp = requests.get(api_url)
     return resp.json()
 
-matches = get_matches(region, puuid, 100, api_key)
+#matches = get_matches(region, puuid, 100, api_key)
 
 
 
