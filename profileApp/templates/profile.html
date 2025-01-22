@@ -6,9 +6,18 @@
 </head>
 <body>
     <h1>Player Profile</h1>
-    <p><strong>Game Name:</strong>{{ gameName }}</p>
-    <p><strong>Tag Line:</strong>{{ tagLine }}</p>
-    <p><strong>PUUID:</strong>{{ puuid }}</p>
+    <p><strong>Game Name: </strong>{{ gameName }}#{{tagLine}}</p>
+    <p><strong>PUUID: </strong>{{ puuid }}</p>
+    <p><strong>Match History:</strong></p>
+    <ul>
+        {% for match in matches %}
+            <li>
+                <strong>Champion: </strong>{{match.champion}}
+                <strong>Result: </strong>{{'Victory' if match.win else 'Defeat'}}
+            </li>
+        {% endfor %}
+    </ul>
+
     <a href="/">Go Back</a>
 </body>
 </html>
