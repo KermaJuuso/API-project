@@ -49,11 +49,7 @@ def get_puuid(region, gameName, tagLine):
         puuid = info['puuid']
         name = info['gameName']
         tag_line = info['tagLine']
-        return {
-            "puuid": puuid,
-            "name": name,
-            "tagLine": tag_line,
-        }
+        return puuid
     else:
         raise Exception(f"Error: {response.status_code}, {response.json()}")
 
@@ -95,7 +91,7 @@ def get_matches(region, puuid):
     #Get list of game ids
     ids = response.json()
 
-    match_list = []
+    match_obj_list = []
     for match in ids:
         #Get match data
         api_url = (f"https://{region}.api.riotgames.com/lol/match/v5/matches/"
@@ -104,9 +100,9 @@ def get_matches(region, puuid):
         response = requests.get(api_url)
         data = response.json()
         match_obj = MatchData(data['metadata'], data['info'], puuid)
-        match_list.append(match_obj)
+        match_obj_list.append(match_obj)
 
-    return match_list
+    return match_obj_list
 
 
 def get_champion_mastery():
@@ -127,9 +123,15 @@ def is_in_game_currently():
     return
 
 
-def get_player_stats(region, gameName, tagLine):
-    return
+def get_match_history(region, puuid):
+    match_obj_list = get_matches(region, puuid)
+
+    #Turn the matches into dict for html
+    matches_frontend = [
+        {"win": match.did_i_win, "champion": match.get_champion}
+        for match in match_obj_list
+    ]
+
+    return matches_frontend
 
 
-list = get_matches('europe', PUUID)
-print(list[0].did_i_win)
