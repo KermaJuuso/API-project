@@ -6,6 +6,8 @@
 </head>
 <body>
     <h1>Player Profile</h1>
+    <img src="{{ url_for('static', filename='profileicon/' + iconfile) }}" alt="Profile Icon">
+    <p><strong>Level:</strong> {{ level }}</p>
     <p><strong>Game Name: </strong>{{ gameName }}#{{tagLine}}</p>
     <p><strong>PUUID: </strong>{{ puuid }}</p>
     <p><strong>Match History:</strong></p>

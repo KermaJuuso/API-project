@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-from riot_api import get_puuid, get_match_history
+from riot_api import get_puuid, get_region, get_summoner_info, init_matchs_history, get_match_data
 
 app = Flask(__name__)
 
@@ -12,20 +12,26 @@ def index():
 def profile():
     game_name = request.form.get('gameName')
     tag_line = request.form.get('tagLine')
-    region = request.form.get('region')
+    server = request.form.get('region')
 
-    print(f"Game Name: {game_name}, Tag Line: {tag_line}, Region: {region}")
+
+    print(f"Game Name: {game_name}, Tag Line: {tag_line}, Region: {server}")
 
     try:
+        region = get_region(server)
         puuid = get_puuid(region, game_name, tag_line)
-        matches = get_match_history(region, puuid)
+        summoner_profile = get_summoner_info(server, puuid)
+        init_matchs_history(region, puuid)
+        history_preview = get_match_data()
 
         return render_template(
             'profile.html',
             puuid=puuid,
+            iconfile=summoner_profile['profileIcon'],
+            level=summoner_profile['summonerLevel'],
             gameName=game_name,
             tagLine=tag_line,
-            matches=matches)
+            matches=history_preview)
 
     except Exception as e:
         return render_template('error.html', message=str(e))
