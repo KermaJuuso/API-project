@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 import os
 import requests
+import time
 
 load_dotenv()
 API_KEY = os.getenv("API_KEY")
@@ -8,6 +9,7 @@ API_KEY = os.getenv("API_KEY")
 #Remove this later
 PUUID = os.getenv("MY_PUUID")
 
+USER_MATCH_DATA = []
 
 class MatchData:
     def __init__(self, metadata, info, puuid):
@@ -44,13 +46,13 @@ def get_puuid(region, gameName, tagLine):
     api_url = api_url + '?api_key=' + API_KEY
 
     response = requests.get(api_url)
+    print(response.status_code)
     if response.status_code == 200:
         info = response.json()
         puuid = info['puuid']
-        name = info['gameName']
-        tag_line = info['tagLine']
         return puuid
     else:
+        print("get_puuid")
         raise Exception(f"Error: {response.status_code}, {response.json()}")
 
 
@@ -65,17 +67,24 @@ def get_summoner_info(server, puuid):
                f"summoners/by-puuid/{puuid}?api_key={API_KEY}")
 
     response = requests.get(api_url)
-    info = response.json()
-    profile_icon = info['profileIconId']
-    summoner_level = info['summonerLevel']
+    print(response.status_code)
 
-    return {
-        "profileIconId": profile_icon,
-        "summonerLevel": summoner_level,
-    }
+    if response.status_code == 200:
+        info = response.json()
+        profile_icon = info['profileIconId']
+        summoner_level = info['summonerLevel']
+        profile_icon_png = f"{profile_icon}.png"
+
+        return {
+            "profileIcon": profile_icon_png,
+            "summonerLevel": summoner_level,
+        }
+    else:
+        print("get_summoner_info")
+        raise Exception(f"Error: {response.status_code}, {response.json()}")
 
 
-def get_matches(region, puuid):
+def init_matchs_history(region, puuid):
     """
     Gets user's 20 most recent game IDs and turns them into MatchData objects.
     MATCH-V5
@@ -91,18 +100,40 @@ def get_matches(region, puuid):
     #Get list of game ids
     ids = response.json()
 
-    match_obj_list = []
+
+    USER_MATCH_DATA.clear()
     for match in ids:
+
         #Get match data
         api_url = (f"https://{region}.api.riotgames.com/lol/match/v5/matches/"
                    f"{match}?api_key={API_KEY}")
 
-        response = requests.get(api_url)
-        data = response.json()
-        match_obj = MatchData(data['metadata'], data['info'], puuid)
-        match_obj_list.append(match_obj)
+        response_data = requests.get(api_url)
+        #If api request rate limit exceeds wait
+        if response_data.status_code == 200:
+            data = response_data.json()
+            match_obj = MatchData(data['metadata'], data['info'], puuid)
+            USER_MATCH_DATA.append(match_obj)
 
-    return match_obj_list
+        elif response_data.status_code == 429:
+            print("sleeping")
+            time.sleep(10)
+
+        else:
+            print("init_match_history")
+            raise Exception(
+                f"Error: {response_data.status_code}, {response.json()}")
+
+
+def get_match_data():
+
+    #Turn the matches into dict for html
+    matches_frontend = [
+        {"win": match.did_i_win, "champion": match.get_champion}
+        for match in USER_MATCH_DATA
+    ]
+
+    return matches_frontend
 
 
 def get_champion_mastery():
@@ -123,15 +154,8 @@ def is_in_game_currently():
     return
 
 
-def get_match_history(region, puuid):
-    match_obj_list = get_matches(region, puuid)
-
-    #Turn the matches into dict for html
-    matches_frontend = [
-        {"win": match.did_i_win, "champion": match.get_champion}
-        for match in match_obj_list
-    ]
-
-    return matches_frontend
-
-
+def get_region(server):
+    if server == 'EUW1' or 'EUN1':
+        return 'EUROPE'
+    else:
+        return 'AMERICAS'
