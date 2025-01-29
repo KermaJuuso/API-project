@@ -10,6 +10,16 @@
     <p><strong>Level:</strong> {{ level }}</p>
     <p><strong>Game Name: </strong>{{ gameName }}#{{tagLine}}</p>
     <p><strong>PUUID: </strong>{{ puuid }}</p>
+    <h3>Top Champions</h3>
+    <ul>
+        {% for champion in topChampions %}
+            <li>
+                <strong>Champion: </strong>{{champion.id}}
+                <strong>Level: </strong>{{champion.level}}
+                <strong>Poins: </strong>{{champion.points}}
+            </li>
+        {% endfor %}
+    </ul>
     <p><strong>Match History:</strong></p>
     <ul>
         {% for match in matches %}

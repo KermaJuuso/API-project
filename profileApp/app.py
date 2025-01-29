@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-from riot_api import get_puuid, get_region, get_summoner_info, init_matchs_history, get_match_data
+from riot_api import get_puuid, get_region, get_summoner_info, init_matchs_history, get_match_data, get_champion_mastery
 
 app = Flask(__name__)
 
@@ -23,6 +23,7 @@ def profile():
         summoner_profile = get_summoner_info(server, puuid)
         init_matchs_history(region, puuid)
         history_preview = get_match_data()
+        mastery = get_champion_mastery(puuid, server)
 
         return render_template(
             'profile.html',
@@ -31,7 +32,8 @@ def profile():
             level=summoner_profile['summonerLevel'],
             gameName=game_name,
             tagLine=tag_line,
-            matches=history_preview)
+            matches=history_preview,
+            topChampions=mastery)
 
     except Exception as e:
         return render_template('error.html', message=str(e))

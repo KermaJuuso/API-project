@@ -136,13 +136,31 @@ def get_match_data():
     return matches_frontend
 
 
-def get_champion_mastery():
+def get_champion_mastery(puuid, server):
     """
-    This function fetches mastery of players top played champions-
+    This function fetches mastery of players top 3 played champions
     CHAMPION-MASTERY-V4
     :return:
     """
-    return
+    api_url = (f"https://{server}.api.riotgames.com/lol/champion-mastery/v4/"
+               f"champion-masteries/by-puuid/{puuid}/top?count=3&api_key={API_KEY}")
+
+    response = requests.get(api_url)
+    top_list = []
+    if response.status_code == 200:
+        top_champs = response.json()
+        for champion in top_champs:
+            top_list.append(
+                {'id': champion['championId'],
+                 'level': champion['championLevel'],
+                 'points': champion['championPoints']}
+            )
+        return top_list
+    else:
+        print("get_champion_mastery")
+        raise Exception(f"Error: {response.status_code}, {response.text}")
+
+
 
 
 def is_in_game_currently():
@@ -159,3 +177,5 @@ def get_region(server):
         return 'EUROPE'
     else:
         return 'AMERICAS'
+
+print(get_champion_mastery(PUUID, 'euw1'))
