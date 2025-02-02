@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 import os
 import requests
 import time
+import json
 
 load_dotenv()
 API_KEY = os.getenv("API_KEY")
@@ -28,7 +29,6 @@ class MatchData:
     @property
     def get_champion(self):
         return self.my_data['championName']
-
 
 
 def get_puuid(region, gameName, tagLine):
@@ -126,7 +126,11 @@ def init_matchs_history(region, puuid):
 
 
 def get_match_data():
-
+    """
+    Turns match data from MatchData objects to small dict for
+    match history preview.
+    :return: dict
+    """
     #Turn the matches into dict for html
     matches_frontend = [
         {"win": match.did_i_win, "champion": match.get_champion}
@@ -140,7 +144,9 @@ def get_champion_mastery(puuid, server):
     """
     This function fetches mastery of players top 3 played champions
     CHAMPION-MASTERY-V4
-    :return:
+    :param puuid: str, players ID
+    :param server: str, server of the user
+    :return: dict, containing top played champs, their levels and points
     """
     api_url = (f"https://{server}.api.riotgames.com/lol/champion-mastery/v4/"
                f"champion-masteries/by-puuid/{puuid}/top?count=3&api_key={API_KEY}")
@@ -150,8 +156,9 @@ def get_champion_mastery(puuid, server):
     if response.status_code == 200:
         top_champs = response.json()
         for champion in top_champs:
+            championName = champion_id_to_name(int(champion['championId']))
             top_list.append(
-                {'id': champion['championId'],
+                {'id': championName,
                  'level': champion['championLevel'],
                  'points': champion['championPoints']}
             )
@@ -159,8 +166,6 @@ def get_champion_mastery(puuid, server):
     else:
         print("get_champion_mastery")
         raise Exception(f"Error: {response.status_code}, {response.text}")
-
-
 
 
 def is_in_game_currently():
@@ -178,4 +183,22 @@ def get_region(server):
     else:
         return 'AMERICAS'
 
-print(get_champion_mastery(PUUID, 'euw1'))
+#print(get_champion_mastery(PUUID, 'euw1'))
+
+
+def champion_id_to_name(id):
+    """
+    Turns champion id to champion json.
+    In future this can be used to access more champion information
+    :param id: int, champion id
+    :return:str, champion name
+    """
+    with open("static/championData/champion.json", "r", encoding="utf-8") as file:
+        data = json.load(file)
+
+    for champ_name, champ_data in data["data"].items():
+        if champ_data["key"] == str(id):  # Riot stores IDs as strings
+            return champ_name
+
+    return "Unknown Champion"
+
