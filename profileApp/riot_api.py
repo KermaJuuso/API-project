@@ -193,12 +193,15 @@ def champion_id_to_name(id):
     :param id: int, champion id
     :return:str, champion name
     """
-    with open("static/championData/champion.json", "r", encoding="utf-8") as file:
+
+    json_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static', 'championData', 'champion.json')
+    with open(json_path, "r", encoding="utf-8") as file:
         data = json.load(file)
 
     for champ_name, champ_data in data["data"].items():
-        if champ_data["key"] == str(id):  # Riot stores IDs as strings
+        if champ_data["key"] == str(id):  
             return champ_name
 
     return "Unknown Champion"
 
+print(champion_id_to_name(1))

@@ -1,45 +1,74 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background-color: #1c1c1f;
     text-align: center;
     padding: 50px;
+    color: #d1d1d6;
 }
 
 h1 {
-    color: #333;
+    color: #ffffff;
 }
 
 form {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    display: inline-block;
-    text-align: left;
+    background: #2a2a32;
+    padding: 10px;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    width: fit-content;
+    margin: auto;
 }
 
 label {
     font-weight: bold;
+    display: none; 
 }
 
 input, select {
-    width: 100%;
-    padding: 8px;
-    margin: 5px 0 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    background: #3a3a44;
+    color: #d1d1d6;
+    border: 1px solid #4a4a55;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 16px;
+    outline: none;
+    transition: border 0.2s ease-in-out;
+}
+
+input:focus, select:focus {
+    border: 1px solid #5a5a66;
+}
+
+#gameName {
+    width: 250px;
+}
+
+#tagLine {
+    width: 80px;
+}
+
+#region {
+    width: 120px;
 }
 
 button {
     background-color: #007bff;
     color: white;
-    padding: 10px;
+    padding: 10px 20px;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
-    width: 100%;
+    font-size: 16px;
 }
 
 button:hover {
     background-color: #0056b3;
+}
+
+input::placeholder {
+    color: #aaa; 
+    font-style: italic;
 }
