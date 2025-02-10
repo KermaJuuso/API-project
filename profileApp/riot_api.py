@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+from MatchData import MatchData, USER_MATCH_DATA
 import os
 import requests
 import time
@@ -9,26 +10,6 @@ API_KEY = os.getenv("API_KEY")
 
 #Remove this later
 PUUID = os.getenv("MY_PUUID")
-
-USER_MATCH_DATA = []
-
-class MatchData:
-    def __init__(self, metadata, info, puuid):
-        self.metadata = metadata
-        self.info = info
-
-        # Find all the user-specific data
-        self.my_id = puuid
-        self.my_index = self.metadata['participants'].index(self.my_id)
-        self.my_data = info['participants'][self.my_index]
-
-    @property
-    def did_i_win(self):
-        return self.my_data['win']
-
-    @property
-    def get_champion(self):
-        return self.my_data['championName']
 
 
 def get_puuid(region, gameName, tagLine):
@@ -125,17 +106,23 @@ def init_matchs_history(region, puuid):
                 f"Error: {response_data.status_code}, {response.json()}")
 
 
-def get_match_data():
+def get_match_preview():
     """
     Turns match data from MatchData objects to small dict for
     match history preview.
-    :return: dict
+    :return: list
     """
     #Turn the matches into dict for html
-    matches_frontend = [
-        {"win": match.did_i_win, "champion": match.get_champion}
-        for match in USER_MATCH_DATA
-    ]
+
+    matches_frontend = []
+    id = 1
+    for match in USER_MATCH_DATA:
+        matches_frontend.append({
+            "win": match.did_i_win,
+            "champion": match.get_champion,
+            "id": id
+        })
+        id += 1
 
     return matches_frontend
 
@@ -204,4 +191,6 @@ def champion_id_to_name(id):
 
     return "Unknown Champion"
 
-print(champion_id_to_name(1))
+
+def get_match_data(id):
+    return USER_MATCH_DATA[id]
