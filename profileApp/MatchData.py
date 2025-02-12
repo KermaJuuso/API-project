@@ -16,3 +16,55 @@ class MatchData:
     @property
     def get_champion(self):
         return self.my_data['championName']
+    
+    @property
+    def get_game_mode(self):
+        return self.info['gameMode']
+    
+    @property
+    def get_game_duration(self):
+        return self.info['gameDuration']
+    
+
+    @property
+    def get_team_summary(self):
+        summary = []
+
+        for team in self.info['teams']:
+            #Get game result for game
+            team_win = 'Victory' if team['win'] else 'Defeat'
+
+            # Either 100 or 200, 100 = blue side and 200 = red side
+            team_id = team['teamId']
+
+            # 5 champion id's for a team
+            bans = [ban['championId'] for ban in team['bans']]
+
+            summary.append(
+                {
+                    'team': team_id,
+                    'bans': bans,
+                    'win': team_win
+                }
+            )
+        return summary
+    
+
+    @property
+    def get_match_overview(self):
+        list = []
+        for participant in self.info['participants']:
+            list.append(
+                {'name': participant['riotIdGameName'],
+                 'tag': participant['riotIdTagline'],
+                 'champion': participant['championName'],
+                 'position': participant['teamPosition'],
+                 'cs': participant['totalMinionsKilled'],
+                 'kills': participant['kills'],
+                 'deaths': participant['deaths'],
+                 'assists': participant['assists'],
+                 'profileIcon': participant['profileIcon']
+                 }
+            )
+        
+        return list
