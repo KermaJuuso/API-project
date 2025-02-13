@@ -81,8 +81,8 @@ def init_matchs_history(region, puuid):
     #Get list of game ids
     ids = response.json()
 
+    match_history = []
 
-    USER_MATCH_DATA.clear()
     for match in ids:
 
         #Get match data
@@ -94,7 +94,7 @@ def init_matchs_history(region, puuid):
         if response_data.status_code == 200:
             data = response_data.json()
             match_obj = MatchData(data['metadata'], data['info'], puuid)
-            USER_MATCH_DATA.append(match_obj)
+            match_history.append(match_obj)
 
         elif response_data.status_code == 429:
             print("sleeping")
@@ -104,9 +104,11 @@ def init_matchs_history(region, puuid):
             print("init_match_history")
             raise Exception(
                 f"Error: {response_data.status_code}, {response.json()}")
+    
+    return match_history
 
 
-def get_match_preview():
+def get_match_preview(match_history):
     """
     Turns match data from MatchData objects to small dict for
     match history preview.
@@ -116,7 +118,7 @@ def get_match_preview():
 
     matches_frontend = []
     id = 1
-    for match in USER_MATCH_DATA:
+    for match in match_history:
         matches_frontend.append({
             "win": match.did_i_win,
             "champion": match.get_champion,
@@ -192,5 +194,17 @@ def champion_id_to_name(id):
     return "Unknown Champion"
 
 
-def get_match_data(id):
-    return USER_MATCH_DATA[id]
+def get_match_data(match_id):
+    match_data =  USER_MATCH_DATA[match_id]
+    
+    #Testing:
+    print(match_data.get_match_overview)
+    print(match_data.get_team_summary)
+
+
+#Testing
+#--------------------------------------------------------------
+print(init_matchs_history('EUROPE', PUUID))
+
+
+    
