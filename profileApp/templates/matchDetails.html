@@ -2,9 +2,63 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Details</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Match Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: white;
+            text-align: center;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #2a2a2a;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #444;
+        }
+        th {
+            background-color: #333;
+        }
+        img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+    </style>
 </head>
 <body>
-    <h1>{{'Victory' if match.win else 'Defeat'}}</h1>
+
+    <h1>Match Overview</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Profile</th>
+                <th>Summoner</th>
+                <th>Champion</th>
+                <th>Position</th>
+                <th>CS</th>
+                <th>K/D/A</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for player in match %}
+            <tr>
+                <td><img src="{{ url_for('static', filename='profileicon/' + player.profileIcon) }}" alt="Icon"></td>
+                <td>{{ player.name }}#{{ player.tag }}</td>
+                <td>{{ player.champion }}</td>
+                <td>{{ player.position }}</td>
+                <td>{{ player.cs }}</td>
+                <td>{{ player.kills }}/{{ player.deaths }}/{{ player.assists }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
 </body>
+</html>
