@@ -31,8 +31,8 @@ This is a Flask-based web application that allows users to search for League of 
 
 1. **Clone this repository**:
    ```bash
-   git clone https://github.com/yourusername/lol-player-lookup.git
-   cd lol-player-lookup
+   git clone https://github.com/KermaJuuso/API-project.git
+   cd project1
 2. **Install the required dependencies**: Ensure Docker Desktop is running on your machine.
     ```bash
     pip install -r requirements.txt
