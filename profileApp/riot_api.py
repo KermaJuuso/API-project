@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
-from MatchData import MatchData, USER_MATCH_DATA
+from MatchData import MatchData
+from flask_caching import Cache
 import os
 import requests
 import time
@@ -101,9 +102,10 @@ def init_matchs_history(region, puuid):
             time.sleep(10)
 
         else:
-            print("init_match_history")
+            print("init_match_history FAIL")
             raise Exception(
                 f"Error: {response_data.status_code}, {response.json()}")
+    
     
     return match_history
 
@@ -117,7 +119,7 @@ def get_match_preview(match_history):
     #Turn the matches into dict for html
 
     matches_frontend = []
-    id = 1
+    id = 0
     for match in match_history:
         matches_frontend.append({
             "win": match.did_i_win,
@@ -194,17 +196,13 @@ def champion_id_to_name(id):
     return "Unknown Champion"
 
 
-def get_match_data(match_id):
-    match_data =  USER_MATCH_DATA[match_id]
-    
-    #Testing:
-    print(match_data.get_match_overview)
-    print(match_data.get_team_summary)
+def handle_match_data(match_data):
+    return match_data.get_match_overview
+
 
 
 #Testing
 #--------------------------------------------------------------
-print(init_matchs_history('EUROPE', PUUID))
 
 
     

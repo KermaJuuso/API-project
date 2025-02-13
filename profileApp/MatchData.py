@@ -1,4 +1,4 @@
-USER_MATCH_DATA = []
+
 class MatchData:
     def __init__(self, metadata, info, puuid):
         self.metadata = metadata
@@ -55,6 +55,7 @@ class MatchData:
         overview = []
         
         for participant in self.info['participants']:
+            profile_icon_png = f"{participant['profileIcon']}.png"
             overview.append(
                 {'name': participant['riotIdGameName'],
                  'tag': participant['riotIdTagline'],
@@ -64,7 +65,7 @@ class MatchData:
                  'kills': participant['kills'],
                  'deaths': participant['deaths'],
                  'assists': participant['assists'],
-                 'profileIcon': participant['profileIcon']
+                 'profileIcon': profile_icon_png
                  }
             )
         
