@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-from riot_api import get_puuid, get_region, get_summoner_info, init_matchs_history, get_match_data, get_champion_mastery
+from riot_api import get_puuid, get_region, get_summoner_info, init_matchs_history, get_match_preview, get_champion_mastery, get_match_data
 
 app = Flask(__name__)
 
@@ -21,8 +21,8 @@ def profile():
         region = get_region(server)
         puuid = get_puuid(region, game_name, tag_line)
         summoner_profile = get_summoner_info(server, puuid)
-        init_matchs_history(region, puuid)
-        history_preview = get_match_data()
+        match_history = init_matchs_history(region, puuid)
+        history_preview = get_match_preview(match_history)
         mastery = get_champion_mastery(puuid, server)
 
         return render_template(
@@ -37,6 +37,21 @@ def profile():
 
     except Exception as e:
         return render_template('error.html', message=str(e))
+    
+@app.route('/match/<match_id>')
+def match_details(match_id):
+    try: 
+        match_data = get_match_data(match_id)
+        
+        return render_template(
+            'matchDetails.html', 
+            match_id=match_id,
+            match=match_data)
+    
+    except Exception as e:
+        return render_template('error.html', message=str(e))
+
+    
 
 
 if __name__ == "__main__":
