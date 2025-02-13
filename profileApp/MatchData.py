@@ -52,9 +52,10 @@ class MatchData:
 
     @property
     def get_match_overview(self):
-        list = []
+        overview = []
+        
         for participant in self.info['participants']:
-            list.append(
+            overview.append(
                 {'name': participant['riotIdGameName'],
                  'tag': participant['riotIdTagline'],
                  'champion': participant['championName'],
@@ -67,4 +68,4 @@ class MatchData:
                  }
             )
         
-        return list
+        return overview
