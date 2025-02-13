@@ -72,3 +72,18 @@ input::placeholder {
     color: #aaa; 
     font-style: italic;
 }
+
+.topChampionInfo, .matchHistory {
+    padding: 8px;
+    border-bottom: 1px solid #444;
+}
+
+.match_link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.match_link:hover .matchHistory {
+    background-color: #333;
+}
