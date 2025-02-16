@@ -11,7 +11,7 @@ app = Flask(__name__)
 app.config['CACHE_TYPE'] = 'RedisCache'
 app.config['CACHE_REDIS_HOST'] = 'localhost'
 app.config['CACHE_REDIS_PORT'] = 6379
-app.config['CACHE_DEFAULT_TIMEOUT'] = 300 # Cache timeout in seconds
+app.config['CACHE_DEFAULT_TIMEOUT'] = 1200 # Cache timeout in seconds
 cache = Cache(app)
 
 
@@ -53,7 +53,7 @@ def profile():
             cache.set(cache_key, match_history)
 
         # Generate match preview and champion mastery details
-        history_preview = get_match_preview(match_history)
+        match_previews = get_match_preview(match_history)
         mastery = get_champion_mastery(puuid, server)
 
         # Render profile page with retrieved data
@@ -64,7 +64,7 @@ def profile():
             level=summoner_profile['summonerLevel'],
             gameName=game_name,
             tagLine=tag_line,
-            matches=history_preview,
+            matches=match_previews,
             topChampions=mastery)
 
     except Exception as e:

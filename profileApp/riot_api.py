@@ -121,9 +121,11 @@ def get_match_preview(match_history):
     matches_frontend = []
     id = 0
     for match in match_history:
+        champion = match.get_champion
         matches_frontend.append({
             "win": match.did_i_win,
-            "champion": match.get_champion,
+            "champion": champion,
+            "icon": f"{champion}.png",
             "id": id
         })
         id += 1
