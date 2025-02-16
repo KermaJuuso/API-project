@@ -3,36 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <title>Player Profile</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+
+        body {
+            background-image: url("{{ url_for('static', filename='LONELY-PORO-1.jpg') }}");
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+
+            font-family: Arial, sans-serif;
+            background-color: #1c1c1f;
+            text-align: center;
+            padding: 50px;
+            color: #d1d1d6;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+            background-color: #3f3f3f;
+            padding: 20px;
+            margin: 50px 150px;
+            border-radius: 10px;
+        }
+        .profile-section{
+            width: 40%;
+            padding: 5%;
+            background-color: #1c1c1f;
+            color: white;
+            border-radius: 10px;
+     
+        }
+        .match-history{
+            width: 60%;
+            padding: 5%;
+            background-color: #1c1c1f;
+            color: white;
+            border-radius: 10px;
+        }
+
+        h2 {
+            color: #ffffff;
+        }
+
+        #profileIcon {
+            border-radius: 8px;
+            width: 100px;
+            position: static;
+        }
+        #champIcon{
+            border-radius: 4px;
+            width: 60px;
+        }
+
+        .topChampionInfo, .match-game {
+            padding: 8px;
+            border-bottom: 1px solid #444;
+        }
+        .match_link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            width: 100%;
+            height: 80px;
+            border: #1c1c1f;
+            border-radius: 10px;
+        }
+        .match_link:hover .match-game:hover {
+            background-color: #4e4e4e;
+            border-radius: 10px;
+        }
+        .win{
+            background-color: #244180;
+        }
+        .lose{
+            background-color: #692b2b;
+        }
+
+    </style>
 </head>
 <body>
-    <h1>Profile</h1>
-    <img src="{{ url_for('static', filename='profileicon/' + iconfile) }}" alt="Profile Icon">
-    <p><strong>Level:</strong> {{ level }}</p>
-    <p><strong>Game Name: </strong>{{ gameName }}#{{tagLine}}</p>
-    <p><strong>PUUID: </strong>{{ puuid }}</p>
-    <h3>Top Champions</h3>
-    <ul>
-        {% for champion in topChampions %}
-            <div class="topChampionInfo">
-                <strong>Champion: </strong>{{champion.id}}
-                <strong>Level: </strong>{{champion.level}}
-                <strong>Poins: </strong>{{champion.points}}
-            </div>
-        {% endfor %}
-    </ul>
-    <p><strong>Match History:</strong></p>
-    <ul>
-        {% for match in matches %}
-            <a href="{{ url_for('match_details', match_id=match.id, puuid=puuid)}}" class="match_link">
-                <div class="matchHistory">
-                    <strong>Champion: </strong>{{match.champion}}
-                    <strong>Result: </strong>{{'Victory' if match.win else 'Defeat'}}
-                </div>
-            </a>    
-        {% endfor %}
-    </ul>
-
-    <a href="/">Go Back</a>
+    <div class="container">
+        <div class="profile-section">
+            <h2>{{ gameName }} #{{tagLine}}</h2>
+            <img src="{{ url_for('static', filename='profileicon/' + iconfile) }}" alt="Profile Icon" id="profileIcon">
+            <p><strong>Level:</strong> {{ level }}</p>
+            <h3>Top Champions</h3>
+            <ul>
+                {% for champion in topChampions %}
+                    <div class="topChampionInfo">
+                        <strong>Champion: </strong>{{champion.id}}
+                        <strong>Level: </strong>{{champion.level}}
+                        <strong>Poins: </strong>{{champion.points}}
+                    </div>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <div class="match-history">
+            <p><strong>Match History:</strong></p>
+            <ul>
+                {% for match in matches %}
+                    <a href="{{ url_for('match_details', match_id=match.id, puuid=puuid)}}" class="match_link {{ 'win' if match.win else 'lose' }}">
+                        <div class="match-game">
+                            <img src="{{ url_for('static', filename='championIcon/' + match.icon) }}" alt="Champion Icon" id="champIcon">
+                            {{ match.champion }}
+                            {{'Victory' if match.win else 'Defeat'}}
+                        </div>
+                    </a>    
+                {% endfor %}
+            </ul>
+        </div>
+        <a href="/">Go Back</a>
+    </div>
 </body>
 </html>
