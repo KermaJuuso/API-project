@@ -32,14 +32,6 @@
             border-radius: 10px;
      
         }
-        .match-history{
-            width: 60%;
-            padding: 5%;
-            background-color: #1c1c1f;
-            color: white;
-            border-radius: 10px;
-        }
-
         h2 {
             color: #ffffff;
         }
@@ -49,28 +41,85 @@
             width: 100px;
             position: static;
         }
+        .topChampionInfo, .cell {
+            padding: 8px;
+            border-bottom: 1px solid #444;
+        }
+        
+
+        /*---------------------------------------------------------- */
+
+
+        .match-history{
+            width: 60%;
+            padding: 5%;
+            background-color: #1c1c1f;
+            color: white;
+            border-radius: 10px;
+        }
+        .matchCells{
+            text-align: center;
+        }
+
+        .match_link {
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            height: 70px;
+            border: #1c1c1f;
+            border-radius: 10px;
+        }
+
+        .linkCell{
+            width: 200px;
+            padding: 5px;
+        }
+
+        .innerTable{
+        }
+
+        .iconCell{
+            position: relative;
+            display: inline-block;
+        }
+        .iconName{
+            position: absolute;
+            left: 105%; /* Moves it slightly below the icon */
+            top: 50%;
+            transform: translateY(-50%); /* Centers the tooltip */
+            background-color: #222222;
+            color: white;
+            text-align: center;
+            padding: 5px 8px;
+            border-radius: 4px;
+            white-space: nowrap; /* Prevents text from wrapping */
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+            pointer-events: none; /* Prevents tooltip from blocking interactions */
+        }
+        .iconCell:hover .iconName{
+            opacity: 1;
+        }
+
+        .resultCell{
+            font-weight: bold;
+            width: 150px;
+        }
+
         #champIcon{
             border-radius: 4px;
             width: 60px;
         }
 
-        .topChampionInfo, .match-game {
-            padding: 8px;
-            border-bottom: 1px solid #444;
-        }
-        .match_link {
-            text-decoration: none;
-            color: inherit;
-            display: block;
-            width: 100%;
-            height: 80px;
-            border: #1c1c1f;
+        .match_link:hover{
+            background-color: #635d5d;
             border-radius: 10px;
         }
-        .match_link:hover .match-game:hover {
-            background-color: #4e4e4e;
-            border-radius: 10px;
-        }
+
         .win{
             background-color: #244180;
         }
@@ -98,20 +147,30 @@
             </ul>
         </div>
         
-        <div class="match-history">
+        <table class="match-history">
             <p><strong>Match History:</strong></p>
-            <ul>
+            <tbody>
                 {% for match in matches %}
-                    <a href="{{ url_for('match_details', match_id=match.id, puuid=puuid)}}" class="match_link {{ 'win' if match.win else 'lose' }}">
-                        <div class="match-game">
-                            <img src="{{ url_for('static', filename='championIcon/' + match.icon) }}" alt="Champion Icon" id="champIcon">
-                            {{ match.champion }}
-                            {{'Victory' if match.win else 'Defeat'}}
-                        </div>
-                    </a>    
+                    <tr class="matchCells {{ 'win' if match.win else 'lose' }}">
+                        <td class="linkCell ">
+                            <a href="{{ url_for('match_details', match_id=match.id, puuid=puuid)}}" class="match_link">
+                                <table class="innerTable">
+                                    <tr>    
+                                        <td class="iconCell">
+                                            <img src="{{ url_for('static', filename='championIcon/' + match.icon) }}" alt="Champion Icon" id="champIcon">
+                                            <span class="iconName">{{ match.champion }}</span>
+                                        </td>
+                                        <td class="resultCell">
+                                            {{'Victory' if match.win else 'Defeat'}}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </a> 
+                        </td>
+                    </tr>   
                 {% endfor %}
-            </ul>
-        </div>
+            </tbody>
+        </table>
         <a href="/">Go Back</a>
     </div>
 </body>
